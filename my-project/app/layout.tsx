@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-
+import AstroNav from "@/components/AstroNav";
 
 
 
@@ -35,6 +35,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+          <AstroNav/>
           {children}
         </body>
       </html>
