@@ -1,17 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Moon, Send, Star, Sun, User } from "lucide-react"
-
-interface Message {
-  type: 'user' | 'assistant'
-  content: string
-}
+import { Moon, Send, Star, User } from "lucide-react"
+import { chatService, ChatMessage } from "@/lib/chatService"
+import { v4 as uuidv4 } from 'uuid'
 
 // Helper function to format the reading content
 const formatReadingContent = (content: string) => {
@@ -75,19 +72,43 @@ const MessageContent = ({ content, type }: { content: string; type: 'user' | 'as
 }
 
 export default function ChatWithAstro() {
-  const [messages, setMessages] = useState<Message[]>([])
+  const [messages, setMessages] = useState<ChatMessage[]>([])
   const [inputMessage, setInputMessage] = useState("")
+  const [sessionId, setSessionId] = useState<string>("")
+  const [userId, setUserId] = useState<string>("")
+  const [initialReading, setInitialReading] = useState<string | null>(null) // New state for initial reading
 
   useEffect(() => {
+    // Generate or retrieve session and user IDs
+    const storedSessionId = localStorage.getItem('chatSessionId')
+    const storedUserId = localStorage.getItem('userId')
+    
+    const newSessionId = storedSessionId || uuidv4()
+    const newUserId = storedUserId || uuidv4()
+    
+    setSessionId(newSessionId)
+    setUserId(newUserId)
+    
+    if (!storedSessionId || !storedUserId) {
+      localStorage.setItem('chatSessionId', newSessionId)
+      localStorage.setItem('userId', newUserId)
+    }
+
+    // Load initial reading from localStorage
     const savedData = localStorage.getItem('astroReading')
     if (savedData) {
       const { reading } = JSON.parse(savedData)
-      setMessages([
-        {
-          type: 'assistant',
-          content: reading,
-        },
-      ])
+      setInitialReading(reading) // Store reading in state
+      // Do not add the initial reading to messages
+    }
+
+    // Subscribe to real-time updates
+    const unsubscribe = chatService.subscribeToMessages(newSessionId, (updatedMessages) => {
+      setMessages(updatedMessages)
+    })
+
+    return () => {
+      unsubscribe()
     }
   }, [])
 
@@ -95,22 +116,31 @@ export default function ChatWithAstro() {
     e.preventDefault()
     if (!inputMessage.trim()) return
 
-    const userMessage: Message = {
-      type: 'user',
-      content: inputMessage,
-    }
-    setMessages(prev => [...prev, userMessage])
-    setInputMessage("")
+    try {
+      // Add user message
+      await chatService.addMessage({
+        type: 'user',
+        content: inputMessage,
+        sessionId,
+        userId
+      })
 
-    const assistantMessage: Message = {
-      type: 'assistant',
-      content: 'I understand your question about the cosmic energies. Let me consult the stars...',
+      setInputMessage("")
+
+      // Add assistant response (you might want to call your API here)
+      await chatService.addMessage({
+        type: 'assistant',
+        content: 'I understand your question about the cosmic energies. Let me consult the stars...',
+        sessionId,
+        userId
+      })
+    } catch (error) {
+      console.error('Error sending message:', error)
     }
-    setMessages(prev => [...prev, assistantMessage])
   }
 
   return (
-    <div className="flex h-screen bg-gradient-to-b from-indigo-900 to-purple-900 text-purple-50">
+    <div className="flex h-[93vh] bg-gradient-to-b from-indigo-900 to-purple-900 text-purple-50">
       {/* Sidebar */}
       <div className="w-64 bg-indigo-950 bg-opacity-50 p-4 hidden md:block">
         <h2 className="text-xl font-bold mb-4 text-purple-200">Cosmic Journeys</h2>
@@ -131,9 +161,18 @@ export default function ChatWithAstro() {
         {/* Chat Messages */}
         <ScrollArea className="flex-1 p-4">
           <div className="space-y-4">
-            {messages.map((message, index) => (
+            {initialReading && ( // Render initial reading only once
               <Card
-                key={index}
+                className='bg-indigo-950 bg-opacity-50 border-indigo-700'
+              >
+                <CardContent className="p-4">
+                  <MessageContent content={initialReading} type='assistant' />
+                </CardContent>
+              </Card>
+            )}
+            {messages.map((message) => (
+              <Card
+                key={message.id}
                 className={`${
                   message.type === 'assistant'
                     ? 'bg-indigo-950 bg-opacity-50 border-indigo-700'
@@ -155,7 +194,7 @@ export default function ChatWithAstro() {
                   <div className="space-y-2 flex-1">
                     <p className="text-sm font-medium text-purple-200">
                       {message.type === 'assistant' ? 'Celestial Guide' : 'You'}
-                    </p>
+                    </p>                 
                     <MessageContent content={message.content} type={message.type} />
                   </div>
                 </CardContent>

@@ -1,9 +1,20 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextResponse } from 'next/server';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const apiKey = process.env.GEMINI_API_KEY;
+if (!apiKey) {
+  throw new Error('GEMINI_API_KEY is not defined');
+}
+const genAI = new GoogleGenerativeAI(apiKey);
 
-async function generateAstrologicalReading(body) {
+interface AstrologicalReadingRequest {
+  name: string;
+  dateOfBirth: string;
+  timeOfBirth: string;
+  placeOfBirth: string;
+}
+
+async function generateAstrologicalReading(body: AstrologicalReadingRequest) {
   const { name, dateOfBirth, timeOfBirth, placeOfBirth } = body;
 
   const prompt = `You are an expert Vedic astrologer. Provide detailed astrological insights 
@@ -41,9 +52,10 @@ export async function POST(req: Request) {
       reading,
     });
   } catch (error) {
-    console.error(error.message);
+    const errorMessage = (error as Error).message; // Type assertion
+    console.error(errorMessage);
     return NextResponse.json(
-      { error: error.message },
+      { error: errorMessage },
       { status: 500 }
     );
   }
