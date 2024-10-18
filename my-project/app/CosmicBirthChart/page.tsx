@@ -27,7 +27,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
-export function CosmicBirthChart() {
+export default function CosmicBirthChart() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
@@ -67,7 +67,7 @@ export function CosmicBirthChart() {
   }
 
   return (
-    <div className="min-h-[95vh] flex items-center justify-center bg-gradient-to-b from-indigo-950 to-purple-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-indigo-950 to-purple-950 p-4">
       <Card className="w-full max-w-md mx-auto bg-opacity-30 bg-black backdrop-blur-md border-purple-500 text-purple-100 shadow-lg shadow-purple-500/20">
         <CardHeader className="space-y-1">
           <CardTitle className="text-3xl font-bold text-center text-purple-200 flex items-center justify-center">

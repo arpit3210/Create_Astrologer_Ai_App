@@ -8,20 +8,23 @@ import Link from 'next/link'
 
 export default function AstrologyWebsite() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-900 via-purple-800 to-indigo-900 text-white">
+    <div className="min-h-[90vh] bg-gradient-to-b from-indigo-900 via-purple-800 to-indigo-900 text-white">
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-[url('/cosmos-bg.jpg')] bg-cover bg-center opacity-30"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-indigo-900/70"></div>
         <div className="relative z-10 text-center space-y-6 max-w-4xl mx-auto px-4">
           <h1 className="text-5xl md:text-7xl font-serif font-bold text-amber-300">Your Personal AI Astrologer</h1>
-          <p className="text-xl md:text-2xl font-light">Unlock the Secrets of Your Stars</p>
-          <Button className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-3 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105">
-            Get Started
-          </Button>
-          <Button className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-3 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105">
-           Sign Out 
-          </Button>
+          <p className="text-xl my-8 md:text-2xl font-light">Unlock the Secrets of Your Stars</p>
+
+<div className='my-3 px-8'>
+</div>
+          <a href="/CosmicBirthChart" className='my-3 px-8'    >
+            <Button className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-3 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105">
+              Get Started
+            </Button>
+          </a>
+
         </div>
         <div className="absolute bottom-0 left-0 right-0 flex justify-center pb-8">
           <ChevronDown className="w-8 h-8 text-white animate-bounce" />

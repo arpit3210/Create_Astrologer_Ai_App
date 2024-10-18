@@ -1,11 +1,12 @@
 
-import { CosmicBirthChart } from "@/components/CosmicBirthChart"
+// import { CosmicBirthChart } from "@/components/CosmicBirthChart"
+import AstrologyWebsite from "./AstrologyWebsite"
 
 export default function Home() {
   return (
     <main>
       <div>
-        <CosmicBirthChart />
+        <AstrologyWebsite />
       </div>
     </main>
   )

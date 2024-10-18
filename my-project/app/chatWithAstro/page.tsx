@@ -140,7 +140,7 @@ export default function ChatWithAstro() {
   }
 
   return (
-    <div className="flex h-[93vh] bg-gradient-to-b from-indigo-900 to-purple-900 text-purple-50">
+    <div className="flex h-screen bg-gradient-to-b from-indigo-900 to-purple-900 text-purple-50">
       {/* Sidebar */}
       <div className="w-64 bg-indigo-950 bg-opacity-50 p-4 hidden md:block">
         <h2 className="text-xl font-bold mb-4 text-purple-200">Cosmic Journeys</h2>

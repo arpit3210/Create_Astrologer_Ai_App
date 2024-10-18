@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button"
+import {  SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
+// import { Input } from "@/components/ui/input"
 import { Moon, Sun, Menu, Search, Star, Calendar, Book, User, Settings } from "lucide-react"
 import Link from "next/link"
 
@@ -34,7 +35,12 @@ export default function AstroNav() {
           </div>
         </div>
         <div className="flex items-center space-x-4">
-          <form className="hidden md:block">
+
+          
+
+{/* Search Box */}
+
+          {/* <form className="hidden md:block">
             <div className="relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-purple-400" />
               <Input
@@ -42,12 +48,22 @@ export default function AstroNav() {
                 className="pl-8 bg-indigo-900 border-indigo-700 text-purple-100 placeholder-purple-400 w-64"
               />
             </div>
-          </form>
-          <Button variant="ghost" size="icon" className="text-purple-200 hover:text-purple-100 hover:bg-indigo-800">
+          </form> */}
+
+          <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+
+
+
+          {/* <Button variant="ghost" size="icon" className="text-purple-200 hover:text-purple-100 hover:bg-indigo-800">
             <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
             <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">Toggle theme</span>
-          </Button>
+          </Button> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="text-purple-200 hover:text-purple-100 hover:bg-indigo-800 md:hidden">
